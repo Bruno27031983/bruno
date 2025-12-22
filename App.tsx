@@ -161,7 +161,7 @@ const App: React.FC = () => {
         const record = state.records[dateKey];
         if (!record || calculateDailyHours(record) === 0) return null;
         return {
-          date: `${day.getDate()}. ${monthNames[day.getMonth()]}`,
+          date: `Deň ${day.getDate()}`,
           arrival: record.manualArrival || '--:--',
           departure: record.manualDeparture || '--:--',
           break: record.manualBreak || 0,
