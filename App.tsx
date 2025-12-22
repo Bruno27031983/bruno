@@ -45,6 +45,26 @@ const App: React.FC = () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state]);
 
+  // Persistent Storage API - požiadať o trvalé úložisko
+  useEffect(() => {
+    const requestPersistentStorage = async () => {
+      if (navigator.storage && navigator.storage.persist) {
+        const isPersisted = await navigator.storage.persisted();
+        if (!isPersisted) {
+          const result = await navigator.storage.persist();
+          if (result) {
+            console.log('✅ Úložisko je teraz trvalé - dáta sa nebudú mazať automaticky!');
+          } else {
+            console.log('⚠️ Trvalé úložisko nebolo povolené.');
+          }
+        } else {
+          console.log('✅ Úložisko je už trvalé.');
+        }
+      }
+    };
+    requestPersistentStorage();
+  }, []);
+
   const todayKey = getISODate(new Date());
 
   const updateManualField = (dateKey: string, field: 'manualArrival' | 'manualDeparture' | 'manualBreak', value: any) => {
@@ -131,13 +151,34 @@ const App: React.FC = () => {
   }, [currentMonthDays, state]);
 
   const handleExportPdf = async () => {
+    // Zozbierať všetky zapísané dni
+    const recordedDays = currentMonthDays
+      .map(day => {
+        const dateKey = getISODate(day);
+        const record = state.records[dateKey];
+        if (!record || calculateDailyHours(record) === 0) return null;
+        return {
+          date: `${day.getDate()}. ${monthNames[day.getMonth()]}`,
+          arrival: record.manualArrival || '--:--',
+          departure: record.manualDeparture || '--:--',
+          break: record.manualBreak || 0,
+          hours: formatHours(calculateDailyHours(record))
+        };
+      })
+      .filter(Boolean);
+
+    const daysDetail = recordedDays.map(d =>
+      `${d.date} | ${d.arrival} - ${d.departure} | Prestávka: ${d.break} min | ${d.hours}`
+    ).join('\n');
+
     const summaryText = `
 VÝKAZ PRÁCE - ${state.settings.userName}
 Mesiac: ${monthNames[selectedMonth]} ${selectedYear}
 ----------------------------------
-Odpracované: ${formatHours(stats.totalHours)}
-Hrubá mzda: ${stats.grossEarnings.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR' })}
-Čistá mzda: ${stats.netEarnings.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR' })}
+${daysDetail}
+----------------------------------
+CELKOM ODPRACOVANÉ: ${formatHours(stats.totalHours)}
+Počet dní: ${stats.daysWorked}
 ----------------------------------
 Vygenerované v aplikácii BRUNO
     `.trim();
@@ -281,10 +322,10 @@ Vygenerované v aplikácii BRUNO
               const isWeekend = day.getDay() === 0 || day.getDay() === 6;
 
               return (
-                <div key={dateKey} className={`p-4 ${isToday ? 'bg-indigo-50/50' : ''} ${isWeekend ? 'bg-slate-50' : ''}`}>
+                <div key={dateKey} className={`p-4 ${isToday ? 'bg-blue-100 border-l-4 border-blue-600' : ''} ${isWeekend ? 'bg-slate-50' : ''}`}>
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex items-baseline gap-2">
-                      <span className={`text-xl font-black ${isToday ? 'text-indigo-600' : 'text-gray-900'}`}>{day.getDate()}.</span>
+                      <span className={`text-xl font-black ${isToday ? 'text-blue-700' : 'text-gray-900'}`}>{day.getDate()}.</span>
                       <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{day.toLocaleDateString('sk-SK', { weekday: 'short' })}</span>
                     </div>
                     <span className={`px-3 py-1 rounded-lg text-[10px] font-black border-2 ${hours > 0 ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-300 border-gray-100'}`}>
@@ -325,10 +366,11 @@ Vygenerované v aplikácii BRUNO
                   const dateKey = getISODate(day);
                   const record = state.records[dateKey];
                   const hours = calculateDailyHours(record);
+                  const isToday = dateKey === todayKey;
                   const isWeekend = day.getDay() === 0 || day.getDay() === 6;
 
                   return (
-                    <tr key={dateKey} className={`${isWeekend ? 'bg-gray-50/50' : ''} print:bg-transparent`}>
+                    <tr key={dateKey} className={`${isToday ? 'bg-blue-100 border-l-4 border-blue-600' : isWeekend ? 'bg-gray-50/50' : ''} print:bg-transparent`}>
                       <td className="px-6 py-4">
                         <span className="font-black block text-sm text-gray-900 print:text-black">{day.getDate()}. {monthNames[day.getMonth()]}</span>
                         <span className="text-[10px] font-bold text-gray-400 uppercase print:text-gray-500">{day.toLocaleDateString('sk-SK', { weekday: 'long' })}</span>
