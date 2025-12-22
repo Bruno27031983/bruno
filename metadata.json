@@ -1,0 +1,5 @@
+{
+  "name": "ZenWork Attendance",
+  "description": "A sleek, modern monthly attendance tracker with quick triggers for check-ins, check-outs, and automated work hour calculations.",
+  "requestFramePermissions": []
+}
