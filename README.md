@@ -1,20 +1,58 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 📅 Bruno Attendance - Dochádzková aplikácia
 
-# Run and deploy your AI Studio app
+Moderná webová aplikácia na evidenciu dochádzky s automatickým výpočtom odpracovaných hodín a mzdy.
 
-This contains everything you need to run your app locally.
+## 🌐 Živá aplikácia
 
-View your app in AI Studio: https://ai.studio/apps/drive/1OOlAzn-MhsEpo_6vs6bPVcPZ448Fef3S
+**Aplikácia je dostupná na:** https://bruno27031983.github.io/bruno/
 
-## Run Locally
+## ✨ Funkcie
 
-**Prerequisites:**  Node.js
+- ⏰ Manuálne zadávanie príchodov a odchodov
+- 📊 Automatický výpočet odpracovaných hodín
+- 💰 Výpočet hrubej a čistej mzdy
+- 📈 Štatistiky za mesiac (celkové hodiny, priemer, zarábané dni)
+- 💾 Lokálne úložisko dát (localStorage) - žiadne dáta sa neposielajú na server
+- 🌙 Moderné užívateľské rozhanie
 
+## 🚀 Spustenie lokálne
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+**Požiadavky:** Node.js 20+
+
+1. Nainštalujte závislosti:
+   ```bash
+   npm install
+   ```
+
+2. Spustite development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Otvorte v prehliadači: http://localhost:3000
+
+## 🛠️ Build
+
+```bash
+npm run build
+```
+
+Build vytvorí optimalizované súbory v priečinku `dist/`.
+
+## 📦 Technológie
+
+- React 19
+- TypeScript
+- Vite
+- GitHub Pages (hosting)
+- GitHub Actions (automatický deployment)
+
+## 🔒 Bezpečnosť
+
+- Všetky dáta sú uložené **len vo vašom prehliadači** (localStorage)
+- Žiadne údaje sa neposielajú na server
+- Open source - kód je verejný a overiteľný
+
+---
+
+Vytvorené pomocou [Claude Code](https://claude.com/claude-code)
