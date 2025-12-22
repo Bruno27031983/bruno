@@ -11,14 +11,14 @@ interface StatCardProps {
 
 const StatCard: React.FC<StatCardProps> = ({ label, value, icon, trend, color }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center space-x-4">
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color} text-white`}>
-        <i className={`fas ${icon} text-xl`}></i>
+    <div className="bg-white p-3 md:p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row items-center md:items-center text-center md:text-left space-y-2 md:space-y-0 md:space-x-4">
+      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${color} text-white shrink-0`}>
+        <i className={`fas ${icon} text-base md:text-xl`}></i>
       </div>
-      <div>
-        <p className="text-sm font-medium text-gray-500">{label}</p>
-        <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-        {trend && <p className="text-xs text-green-600 mt-1 font-semibold">{trend}</p>}
+      <div className="min-w-0 w-full overflow-hidden">
+        <p className="text-[10px] md:text-sm font-medium text-gray-500 uppercase tracking-tight md:tracking-normal truncate">{label}</p>
+        <h3 className="text-sm md:text-2xl font-black text-gray-900 truncate">{value}</h3>
+        {trend && <p className="hidden md:block text-xs text-green-600 mt-1 font-semibold">{trend}</p>}
       </div>
     </div>
   );
