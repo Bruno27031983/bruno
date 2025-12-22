@@ -165,7 +165,7 @@ const App: React.FC = () => {
           hours: formatHours(calculateDailyHours(record))
         };
       })
-      .filter(Boolean);
+      .filter((d): d is NonNullable<typeof d> => d !== null);
 
     const daysDetail = recordedDays.map(d =>
       `${d.date} | ${d.arrival} - ${d.departure} | Prestávka: ${d.break} min | ${d.hours}`
