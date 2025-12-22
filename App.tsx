@@ -22,6 +22,7 @@ const App: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isPersisted, setIsPersisted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [state, setState] = useState<AttendanceState>(() => {
@@ -49,15 +50,17 @@ const App: React.FC = () => {
   useEffect(() => {
     const requestPersistentStorage = async () => {
       if (navigator.storage && navigator.storage.persist) {
-        const isPersisted = await navigator.storage.persisted();
-        if (!isPersisted) {
+        const persisted = await navigator.storage.persisted();
+        if (!persisted) {
           const result = await navigator.storage.persist();
+          setIsPersisted(result);
           if (result) {
             console.log('✅ Úložisko je teraz trvalé - dáta sa nebudú mazať automaticky!');
           } else {
             console.log('⚠️ Trvalé úložisko nebolo povolené.');
           }
         } else {
+          setIsPersisted(true);
           console.log('✅ Úložisko je už trvalé.');
         }
       }
@@ -426,6 +429,15 @@ Vygenerované v aplikácii BRUNO
             <button onClick={() => fileInputRef.current?.click()} className="w-full py-4 bg-white text-gray-900 rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.05)]"><i className="fas fa-upload"></i> OBNOVIŤ</button>
           </div>
           <button onClick={handleClearMonth} className="w-full py-4 bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(225,29,72,0.3)]"><i className="fas fa-trash-sweep"></i> VYMAZAŤ MESIAC</button>
+
+          {/* Persistent Storage Indikátor */}
+          <div className={`flex items-center justify-center gap-2 p-3 rounded-xl ${isPersisted ? 'bg-emerald-50 border-2 border-emerald-500' : 'bg-amber-50 border-2 border-amber-500'}`}>
+            <div className={`w-3 h-3 rounded-full ${isPersisted ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`}></div>
+            <span className={`text-xs font-black uppercase tracking-wider ${isPersisted ? 'text-emerald-700' : 'text-amber-700'}`}>
+              {isPersisted ? '🔒 Dáta chránené' : '⚠️ Dáta nechránené'}
+            </span>
+          </div>
+
           <input type="file" ref={fileInputRef} onChange={handleImport} accept=".json" className="hidden" />
         </div>
       </main>
