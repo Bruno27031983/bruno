@@ -344,7 +344,7 @@ Vygenerované v aplikácii BRUNO
                       <input type="text" inputMode="numeric" placeholder="Odchod" value={record?.manualDeparture || ''} onFocus={() => handleTimeFocus(dateKey, 'manualDeparture', record?.manualDeparture)} onChange={(e) => handleTimeChange(dateKey, 'manualDeparture', e.target.value)} onBlur={(e) => handleTimeBlur(dateKey, 'manualDeparture', e.target.value)} className={`${inputClasses} w-full pr-6`} />
                       <button onClick={() => setNowForField(dateKey, 'manualDeparture')} className="absolute right-1 top-1/2 -translate-y-1/2 text-rose-500 text-[10px]"><i className="fas fa-stop"></i></button>
                     </div>
-                    <input type="text" inputMode="decimal" placeholder="Prest." value={record?.manualBreak || ''} onChange={(e) => updateManualField(dateKey, 'manualBreak', e.target.value === '' ? undefined : parseFloat(e.target.value))} className={`${inputClasses} w-full`} />
+                    <input type="text" inputMode="decimal" placeholder="Prest." value={record?.manualBreak || ''} onChange={(e) => updateManualField(dateKey, 'manualBreak', e.target.value === '' ? undefined : parseFloat(e.target.value.replace(',', '.')))} className={`${inputClasses} w-full`} />
                   </div>
                 </div>
               );
@@ -394,7 +394,7 @@ Vygenerované v aplikácii BRUNO
                       </td>
                       <td className="px-4 py-4 text-center">
                         <span className="hidden print:block font-bold">{record?.manualBreak ? `${record.manualBreak}h` : '0h'}</span>
-                        <input type="text" inputMode="decimal" value={record?.manualBreak || ''} onChange={(e) => updateManualField(dateKey, 'manualBreak', e.target.value === '' ? undefined : parseFloat(e.target.value))} className={`${inputClasses} w-20 py-3 print:hidden`} />
+                        <input type="text" inputMode="decimal" value={record?.manualBreak || ''} onChange={(e) => updateManualField(dateKey, 'manualBreak', e.target.value === '' ? undefined : parseFloat(e.target.value.replace(',', '.')))} className={`${inputClasses} w-20 py-3 print:hidden`} />
                       </td>
                       <td className="px-4 py-4 text-center font-black">
                         {hours > 0 ? formatHours(hours) : <span className="text-gray-300 print:text-gray-100">--</span>}
