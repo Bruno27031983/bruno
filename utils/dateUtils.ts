@@ -30,7 +30,8 @@ export const calculateDailyHours = (record?: DayRecord): number => {
     
     const arrivalMinutes = arrH * 60 + arrM;
     const departureMinutes = depH * 60 + depM;
-    const breakMinutes = record.manualBreak || 0;
+    const breakHours = record.manualBreak || 0;
+    const breakMinutes = breakHours * 60;
 
     let diff = departureMinutes - arrivalMinutes - breakMinutes;
     return Math.max(0, diff / 60);
