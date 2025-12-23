@@ -1,0 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+@import "tailwindcss";
+
+/* Vlastné štýly */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8fafc;
+  margin: 0;
+}
+
+/* Štýly pre PDF/Tlač */
+@media print {
+  @page { size: auto; margin: 10mm; }
+  body { background-color: white !important; -webkit-print-color-adjust: exact; }
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  .shadow-xl, .shadow-sm, .shadow-2xl, .shadow-lg { box-shadow: none !important; border: none !important; }
+  header, footer, .month-selector, .actions-column, button, .no-print-element { display: none !important; }
+
+  /* Vynútenie zobrazenia tabuľky pri tlači aj na mobile */
+  .print-table-container { display: block !important; width: 100% !important; overflow: visible !important; }
+  table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #000 !important; }
+  th, td { border: 1px solid #eee !important; padding: 8px !important; color: black !important; }
+  thead { border-bottom: 2px solid #000 !important; }
+  tfoot { display: table-footer-group !important; border-top: 2px solid #000 !important; }
+
+  .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+}
+
+.print-only { display: none; }

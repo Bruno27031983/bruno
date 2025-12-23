@@ -5,46 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BRUNO Dochádzka</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqk1w27OMp4aWL8dY8kY1YuZ+QzE7FLLnMDQJTfJ72jNLI7a5g5bVjhbUxTdlEHqQB5L5EYlg==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            margin: 0;
-        }
-        /* Štýly pre PDF/Tlač */
-        @media print {
-            @page { size: auto; margin: 10mm; }
-            body { background-color: white !important; -webkit-print-color-adjust: exact; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            .shadow-xl, .shadow-sm, .shadow-2xl, .shadow-lg { box-shadow: none !important; border: none !important; }
-            header, footer, .month-selector, .actions-column, button, .no-print-element { display: none !important; }
-            
-            /* Vynútenie zobrazenia tabuľky pri tlači aj na mobile */
-            .print-table-container { display: block !important; width: 100% !important; overflow: visible !important; }
-            table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #000 !important; }
-            th, td { border: 1px solid #eee !important; padding: 8px !important; color: black !important; }
-            thead { border-bottom: 2px solid #000 !important; }
-            tfoot { display: table-footer-group !important; border-top: 2px solid #000 !important; }
-            
-            .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
-        }
-        .print-only { display: none; }
-    </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "vite": "https://esm.sh/vite@^7.3.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
-  }
-}
-</script>
 </head>
 <body>
     <div id="root"></div>

@@ -1,13 +1,14 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { AttendanceState, UserSettings } from './types';
-import { 
-  getISODate, 
-  calculateDailyHours, 
-  formatHours, 
+import {
+  getISODate,
+  calculateDailyHours,
+  formatHours,
   getDaysInMonth
 } from './utils/dateUtils';
 import StatCard from './components/StatCard';
+import { FaClock, FaTimes, FaChevronLeft, FaChevronRight, FaPlay, FaStop, FaTrashAlt, FaShareAlt, FaDownload, FaUpload, FaBroom, FaBriefcase, FaCoins, FaWallet, FaPercent } from 'react-icons/fa';
 
 const STORAGE_KEY = 'bruno_attendance_data_v3';
 
@@ -308,7 +309,7 @@ Vygenerované v aplikácii BRUNO
       <header className="no-print bg-white border-b border-gray-100 sticky top-0 z-30 px-4 md:px-8 py-4 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shrink-0"><i className="fas fa-clock text-xl"></i></div>
+            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shrink-0"><FaClock className="text-xl" /></div>
             <div>
               <h1 className="text-base md:text-xl font-black uppercase leading-none text-gray-900">{state.settings.userName}</h1>
               <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">Live Tracker</p>
@@ -326,7 +327,7 @@ Vygenerované v aplikácii BRUNO
           <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md p-6 border-4 border-gray-900 animate-in zoom-in-95">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-2xl font-black uppercase tracking-tight text-gray-900">Nastavenia</h3>
-              <button onClick={() => setIsSettingsOpen(false)} className="text-gray-400 hover:text-black p-2"><i className="fas fa-times text-xl"></i></button>
+              <button onClick={() => setIsSettingsOpen(false)} className="text-gray-400 hover:text-black p-2"><FaTimes className="text-xl" /></button>
             </div>
             <div className="space-y-4">
               <div className="space-y-1">
@@ -367,10 +368,10 @@ Vygenerované v aplikácii BRUNO
 
         {/* Stats Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 no-print">
-          <StatCard label="Odpracované" value={formatHours(stats.totalHours)} icon="fa-briefcase" color="bg-indigo-600" trend={`${stats.daysWorked} dní`} />
-          <StatCard label="Hrubá Mzda" value={stats.grossEarnings.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR' })} icon="fa-coins" color="bg-amber-500" />
-          <StatCard label="Čistá Mzda" value={stats.netEarnings.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR' })} icon="fa-wallet" color="bg-emerald-500" />
-          <StatCard label="Zdanenie" value={`${state.settings.taxRate}%`} icon="fa-percent" color="bg-rose-500" />
+          <StatCard label="Odpracované" value={formatHours(stats.totalHours)} icon={<FaBriefcase />} color="bg-indigo-600" trend={`${stats.daysWorked} dní`} />
+          <StatCard label="Hrubá Mzda" value={stats.grossEarnings.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR' })} icon={<FaCoins />} color="bg-amber-500" />
+          <StatCard label="Čistá Mzda" value={stats.netEarnings.toLocaleString('sk-SK', { style: 'currency', currency: 'EUR' })} icon={<FaWallet />} color="bg-emerald-500" />
+          <StatCard label="Zdanenie" value={`${state.settings.taxRate}%`} icon={<FaPercent />} color="bg-rose-500" />
         </div>
 
         {/* Calendar Section */}
@@ -378,9 +379,9 @@ Vygenerované v aplikácii BRUNO
           <div className="p-4 md:p-6 border-b-4 border-gray-900 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gray-50 no-print">
             <h2 className="text-xl font-black uppercase tracking-tight text-gray-900">Mesačný výkaz</h2>
             <div className="flex items-center gap-1 bg-white border-2 border-gray-900 rounded-xl p-1">
-              <button onClick={handlePrevMonth} className="p-2 hover:text-indigo-600 transition-colors text-gray-900"><i className="fas fa-chevron-left"></i></button>
+              <button onClick={handlePrevMonth} className="p-2 hover:text-indigo-600 transition-colors text-gray-900"><FaChevronLeft /></button>
               <span className="px-4 font-black text-sm uppercase min-w-[140px] text-center text-gray-900">{monthNames[selectedMonth]} {selectedYear}</span>
-              <button onClick={handleNextMonth} className="p-2 hover:text-indigo-600 transition-colors text-gray-900"><i className="fas fa-chevron-right"></i></button>
+              <button onClick={handleNextMonth} className="p-2 hover:text-indigo-600 transition-colors text-gray-900"><FaChevronRight /></button>
             </div>
           </div>
 
@@ -407,11 +408,11 @@ Vygenerované v aplikácii BRUNO
                   <div className="grid grid-cols-3 gap-2">
                     <div className="relative group">
                       <input type="text" inputMode="numeric" placeholder="Príchod" value={record?.manualArrival || ''} onFocus={() => handleTimeFocus(dateKey, 'manualArrival', record?.manualArrival)} onChange={(e) => handleTimeChange(dateKey, 'manualArrival', e.target.value)} onBlur={(e) => handleTimeBlur(dateKey, 'manualArrival', e.target.value)} className={`${inputClasses} w-full pr-6`} />
-                      <button onClick={() => setNowForField(dateKey, 'manualArrival')} className="absolute right-1 top-1/2 -translate-y-1/2 text-emerald-500 text-[10px]"><i className="fas fa-play"></i></button>
+                      <button onClick={() => setNowForField(dateKey, 'manualArrival')} className="absolute right-1 top-1/2 -translate-y-1/2 text-emerald-500 text-[10px]"><FaPlay /></button>
                     </div>
                     <div className="relative group">
                       <input type="text" inputMode="numeric" placeholder="Odchod" value={record?.manualDeparture || ''} onFocus={() => handleTimeFocus(dateKey, 'manualDeparture', record?.manualDeparture)} onChange={(e) => handleTimeChange(dateKey, 'manualDeparture', e.target.value)} onBlur={(e) => handleTimeBlur(dateKey, 'manualDeparture', e.target.value)} className={`${inputClasses} w-full pr-6`} />
-                      <button onClick={() => setNowForField(dateKey, 'manualDeparture')} className="absolute right-1 top-1/2 -translate-y-1/2 text-rose-500 text-[10px]"><i className="fas fa-stop"></i></button>
+                      <button onClick={() => setNowForField(dateKey, 'manualDeparture')} className="absolute right-1 top-1/2 -translate-y-1/2 text-rose-500 text-[10px]"><FaStop /></button>
                     </div>
                     <input type="text" inputMode="decimal" placeholder="Prest." value={record?.manualBreak !== undefined ? record.manualBreak : ''} onChange={(e) => {
                       if (e.target.value === '') {
@@ -458,14 +459,14 @@ Vygenerované v aplikácii BRUNO
                         <span className="hidden print:block font-bold">{record?.manualArrival || '--:--'}</span>
                         <div className="print:hidden relative inline-block w-32">
                           <input type="text" value={record?.manualArrival || ''} onFocus={() => handleTimeFocus(dateKey, 'manualArrival', record?.manualArrival)} onChange={(e) => handleTimeChange(dateKey, 'manualArrival', e.target.value)} onBlur={(e) => handleTimeBlur(dateKey, 'manualArrival', e.target.value)} className={`${inputClasses} w-full py-3 pr-8`} />
-                          <button onClick={() => setNowForField(dateKey, 'manualArrival')} className="absolute right-2 top-1/2 -translate-y-1/2 text-emerald-500"><i className="fas fa-play text-xs"></i></button>
+                          <button onClick={() => setNowForField(dateKey, 'manualArrival')} className="absolute right-2 top-1/2 -translate-y-1/2 text-emerald-500"><FaPlay className="text-xs" /></button>
                         </div>
                       </td>
                       <td className="px-4 py-4 text-center">
                         <span className="hidden print:block font-bold">{record?.manualDeparture || '--:--'}</span>
                         <div className="print:hidden relative inline-block w-32">
                           <input type="text" value={record?.manualDeparture || ''} onFocus={() => handleTimeFocus(dateKey, 'manualDeparture', record?.manualDeparture)} onChange={(e) => handleTimeChange(dateKey, 'manualDeparture', e.target.value)} onBlur={(e) => handleTimeBlur(dateKey, 'manualDeparture', e.target.value)} className={`${inputClasses} w-full py-3 pr-8`} />
-                          <button onClick={() => setNowForField(dateKey, 'manualDeparture')} className="absolute right-2 top-1/2 -translate-y-1/2 text-rose-500"><i className="fas fa-stop text-xs"></i></button>
+                          <button onClick={() => setNowForField(dateKey, 'manualDeparture')} className="absolute right-2 top-1/2 -translate-y-1/2 text-rose-500"><FaStop className="text-xs" /></button>
                         </div>
                       </td>
                       <td className="px-4 py-4 text-center">
@@ -487,7 +488,7 @@ Vygenerované v aplikácii BRUNO
                         {hours > 0 ? formatHours(hours) : <span className="text-gray-300 print:text-gray-100">--</span>}
                       </td>
                       <td className="px-6 py-4 text-right no-print">
-                        <button onClick={() => setState(p => { const r = {...p.records}; delete r[dateKey]; return {...p, records: r} })} className="text-gray-300 hover:text-rose-600 p-2"><i className="far fa-trash-alt"></i></button>
+                        <button onClick={() => setState(p => { const r = {...p.records}; delete r[dateKey]; return {...p, records: r} })} className="text-gray-300 hover:text-rose-600 p-2"><FaTrashAlt /></button>
                       </td>
                     </tr>
                   );
@@ -508,14 +509,14 @@ Vygenerované v aplikácii BRUNO
         {/* Akcie */}
         <div className="no-print flex flex-col gap-4">
           <button onClick={handleExportPdf} className="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-3 border-4 border-gray-900 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none">
-            <i className="fas fa-share-alt text-xl"></i> ODOSLAŤ VÝKAZ
+            <FaShareAlt className="text-xl" /> ODOSLAŤ VÝKAZ
           </button>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button onClick={exportData} className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.1)]"><i className="fas fa-download"></i> ZÁLOHA</button>
-            <button onClick={() => fileInputRef.current?.click()} className="w-full py-4 bg-white text-gray-900 rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.05)]"><i className="fas fa-upload"></i> OBNOVIŤ</button>
+            <button onClick={exportData} className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.1)]"><FaDownload /> ZÁLOHA</button>
+            <button onClick={() => fileInputRef.current?.click()} className="w-full py-4 bg-white text-gray-900 rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.05)]"><FaUpload /> OBNOVIŤ</button>
           </div>
-          <button onClick={handleClearMonth} className="w-full py-4 bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(225,29,72,0.3)]"><i className="fas fa-trash-sweep"></i> VYMAZAŤ MESIAC</button>
+          <button onClick={handleClearMonth} className="w-full py-4 bg-rose-600 text-white rounded-2xl font-black uppercase tracking-widest border-4 border-gray-900 shadow-[6px_6px_0px_0px_rgba(225,29,72,0.3)]"><FaBroom /> VYMAZAŤ MESIAC</button>
 
           {/* Persistent Storage Indikátor */}
           <div className={`flex items-center justify-center gap-2 p-3 rounded-xl ${isPersisted ? 'bg-emerald-50 border-2 border-emerald-500' : 'bg-amber-50 border-2 border-amber-500'}`}>

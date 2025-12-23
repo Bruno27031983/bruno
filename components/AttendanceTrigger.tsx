@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { LogType } from '../types';
+import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 
 interface AttendanceTriggerProps {
   onLog: (type: LogType) => void;
@@ -27,7 +28,7 @@ const AttendanceTrigger: React.FC<AttendanceTriggerProps> = ({ onLog, lastLogTyp
               : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-200 shadow-xl transform hover:-translate-y-1'
           }`}
         >
-          <i className="fas fa-sign-in-alt text-2xl mb-2"></i>
+          <FaSignInAlt className="text-2xl mb-2" />
           <span className="font-bold">Príchod</span>
         </button>
 
@@ -35,12 +36,12 @@ const AttendanceTrigger: React.FC<AttendanceTriggerProps> = ({ onLog, lastLogTyp
           onClick={() => onLog('departure')}
           disabled={!isCheckedIn}
           className={`flex-1 py-4 px-6 rounded-2xl flex flex-col items-center justify-center transition-all duration-300 ${
-            !isCheckedIn 
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+            !isCheckedIn
+              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
               : 'bg-rose-500 text-white hover:bg-rose-600 shadow-rose-200 shadow-xl transform hover:-translate-y-1'
           }`}
         >
-          <i className="fas fa-sign-out-alt text-2xl mb-2"></i>
+          <FaSignOutAlt className="text-2xl mb-2" />
           <span className="font-bold">Odchod</span>
         </button>
       </div>
