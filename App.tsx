@@ -522,7 +522,7 @@ Vygenerované v aplikácii BRUNO
           <div className={`flex items-center justify-center gap-2 p-3 rounded-xl ${isPersisted ? 'bg-emerald-50 border-2 border-emerald-500' : 'bg-amber-50 border-2 border-amber-500'}`}>
             <div className={`w-3 h-3 rounded-full ${isPersisted ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`}></div>
             <span className={`text-xs font-black uppercase tracking-wider ${isPersisted ? 'text-emerald-700' : 'text-amber-700'}`}>
-              {isPersisted ? '🔒 Dáta chránené' : '⚠️ Dáta nechránené'}
+              {isPersisted ? '✅ Chránené pred vymazaním' : '⚠️ Môžu byť vymazané'}
             </span>
           </div>
 
