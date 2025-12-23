@@ -94,13 +94,30 @@ const App: React.FC = () => {
 
   const handleTimeBlur = (dateKey: string, field: 'manualArrival' | 'manualDeparture', val: string) => {
     let raw = val.replace(/[^0-9]/g, '');
+    let hours = 0;
+    let minutes = 0;
+
     if (raw.length === 4) {
-      updateManualField(dateKey, field, raw.slice(0, 2) + ':' + raw.slice(2));
+      hours = parseInt(raw.slice(0, 2));
+      minutes = parseInt(raw.slice(2));
     } else if (raw.length === 3) {
-      updateManualField(dateKey, field, '0' + raw.slice(0, 1) + ':' + raw.slice(1));
+      hours = parseInt(raw.slice(0, 1));
+      minutes = parseInt(raw.slice(1));
     } else if (raw.length > 0 && raw.length < 3) {
-      updateManualField(dateKey, field, `${raw.padStart(2, '0')}:00`);
+      hours = parseInt(raw.padStart(2, '0'));
+      minutes = 0;
+    } else {
+      return; // Prázdny vstup
     }
+
+    // VALIDÁCIA
+    if (hours > 23 || minutes > 59) {
+      alert('Neplatný čas! Hodiny musia byť 0-23, minúty 0-59.');
+      updateManualField(dateKey, field, '');
+      return;
+    }
+
+    updateManualField(dateKey, field, `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`);
   };
 
   const handleTimeFocus = (dateKey: string, field: string, currentVal: string = '') => {
@@ -114,7 +131,27 @@ const App: React.FC = () => {
     updateManualField(dateKey, field, timeStr);
   };
 
+  const sanitizeUserName = (name: string): string => {
+    return name
+      .slice(0, 50) // Maximálna dĺžka 50 znakov
+      .replace(/[<>'"]/g, '') // Odstránenie nebezpečných znakov
+      .trim();
+  };
+
   const updateSettings = (updates: Partial<UserSettings>) => {
+    // Validácia používateľského mena
+    if (updates.userName !== undefined) {
+      updates.userName = sanitizeUserName(updates.userName);
+    }
+
+    // Validácia numerických hodnôt
+    if (updates.hourlyWage !== undefined && (!Number.isFinite(updates.hourlyWage) || updates.hourlyWage < 0)) {
+      updates.hourlyWage = 0;
+    }
+    if (updates.taxRate !== undefined && (!Number.isFinite(updates.taxRate) || updates.taxRate < 0 || updates.taxRate > 100)) {
+      updates.taxRate = Math.max(0, Math.min(100, updates.taxRate));
+    }
+
     setState(prev => ({
       ...prev,
       settings: { ...prev.settings, ...updates }
@@ -218,17 +255,49 @@ Vygenerované v aplikácii BRUNO
     }
   };
 
+  const validateImportedData = (data: any): data is AttendanceState => {
+    // Základná kontrola štruktúry
+    if (!data || typeof data !== 'object') return false;
+    if (!data.records || typeof data.records !== 'object') return false;
+    if (!data.settings || typeof data.settings !== 'object') return false;
+
+    // Validácia settings
+    if (typeof data.settings.userName !== 'string' || data.settings.userName.length > 100) return false;
+    if (typeof data.settings.hourlyWage !== 'number' || !Number.isFinite(data.settings.hourlyWage) || data.settings.hourlyWage < 0) return false;
+    if (typeof data.settings.taxRate !== 'number' || !Number.isFinite(data.settings.taxRate) || data.settings.taxRate < 0 || data.settings.taxRate > 100) return false;
+
+    return true;
+  };
+
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Kontrola veľkosti súboru (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Súbor je príliš veľký (max 5MB)');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
         const imported = JSON.parse(e.target?.result as string);
-        if (imported.records) { setState(imported); alert('Dáta úspešne nahraté!'); }
-      } catch (err) { alert('Chyba súboru.'); }
+
+        if (!validateImportedData(imported)) {
+          throw new Error('Neplatná štruktúra alebo poškodené dáta');
+        }
+
+        setState(imported);
+        alert('Dáta úspešne nahraté!');
+      } catch (err) {
+        alert(`Chyba pri nahrávaní: ${err instanceof Error ? err.message : 'Neplatný súbor'}`);
+      }
     };
     reader.readAsText(file);
+
+    // Reset input pre možnosť nahrať rovnaký súbor znova
+    event.target.value = '';
   };
 
   const inputClasses = "bg-white border-2 border-gray-900 text-black text-xs font-black px-1 py-2 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-600 outline-none transition-all text-center placeholder:text-gray-300";
@@ -344,7 +413,14 @@ Vygenerované v aplikácii BRUNO
                       <input type="text" inputMode="numeric" placeholder="Odchod" value={record?.manualDeparture || ''} onFocus={() => handleTimeFocus(dateKey, 'manualDeparture', record?.manualDeparture)} onChange={(e) => handleTimeChange(dateKey, 'manualDeparture', e.target.value)} onBlur={(e) => handleTimeBlur(dateKey, 'manualDeparture', e.target.value)} className={`${inputClasses} w-full pr-6`} />
                       <button onClick={() => setNowForField(dateKey, 'manualDeparture')} className="absolute right-1 top-1/2 -translate-y-1/2 text-rose-500 text-[10px]"><i className="fas fa-stop"></i></button>
                     </div>
-                    <input type="text" inputMode="decimal" placeholder="Prest." value={record?.manualBreak || ''} onChange={(e) => updateManualField(dateKey, 'manualBreak', e.target.value === '' ? undefined : parseFloat(e.target.value.replace(',', '.')))} className={`${inputClasses} w-full`} />
+                    <input type="text" inputMode="decimal" placeholder="Prest." value={record?.manualBreak !== undefined ? record.manualBreak : ''} onChange={(e) => {
+                      if (e.target.value === '') {
+                        updateManualField(dateKey, 'manualBreak', undefined);
+                      } else {
+                        const num = parseFloat(e.target.value.replace(',', '.'));
+                        updateManualField(dateKey, 'manualBreak', Number.isNaN(num) ? 0 : num);
+                      }
+                    }} className={`${inputClasses} w-full`} />
                   </div>
                 </div>
               );
@@ -394,7 +470,18 @@ Vygenerované v aplikácii BRUNO
                       </td>
                       <td className="px-4 py-4 text-center">
                         <span className="hidden print:block font-bold">{record?.manualBreak ? `${record.manualBreak}h` : '0h'}</span>
-                        <input type="text" inputMode="decimal" value={record?.manualBreak || ''} onChange={(e) => updateManualField(dateKey, 'manualBreak', e.target.value === '' ? undefined : parseFloat(e.target.value.replace(',', '.')))} className={`${inputClasses} w-20 py-3 print:hidden`} />
+                        <input type="text" inputMode="decimal" placeholder="Prest."
+                          value={record?.manualBreak !== undefined ? record.manualBreak : ''}
+                          onChange={(e) => {
+                            if (e.target.value === '') {
+                              updateManualField(dateKey, 'manualBreak', undefined);
+                            } else {
+                              const num = parseFloat(e.target.value.replace(',', '.'));
+                              updateManualField(dateKey, 'manualBreak', Number.isNaN(num) ? 0 : num);
+                            }
+                          }}
+                          className={`${inputClasses} w-20 py-3 print:hidden`}
+                        />
                       </td>
                       <td className="px-4 py-4 text-center font-black">
                         {hours > 0 ? formatHours(hours) : <span className="text-gray-300 print:text-gray-100">--</span>}
